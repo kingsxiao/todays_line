@@ -1,3 +1,4 @@
+
 module.exports = {
   getData: function (req, res) {
     Promise.all([
@@ -37,45 +38,32 @@ module.exports = {
     const obj = await eval(tableName).findOne({ id });
     res.json(obj)
   },
-  getMsgObj: async function (req, res) {
-    Promise.all([
-      new Promise(async (resolve, reject) => {
-        const newest = await News.find({ newType: 'newest' }).sort('id asc').limit(5);
-        resolve(newest)
-      }),
-      new Promise(async (resolve, reject) => {
-        const newhot = await News.find({ newType: 'newhot' }).sort('id asc').limit(5);
-        resolve(newhot)
-      }),
-      new Promise(async (resolve, reject) => {
-        const images = await Images.find().sort("id asc").limit(4);
-        resolve(images)
-      }),
-      new Promise(async (resolve, reject) => {
-        const video = await Video.find().sort("id asc").limit(4);
-        resolve(video)
-      }),
-    ]).then(arr => {
-      res.json(arr)
-    }).catch(err => {
-      console.log(err);
-    })
-  },
   getNews: async function (req, res) {
     const newType = req.query.type;
+    const start = req.query.start;
     const size = req.query.size;
-    const arr = await News.find({ newType }).sort('id asc').limit(size);
+    const arr = await News.find({ newType }).sort('id asc').skip(start).limit(size);
     res.json(arr)
   },
-  getMedia: async function (req, res) {
-    const table = req.query.type;
+  getVideo: async function (req, res) {
+    const start = req.query.start;
     const size = req.query.size;
-    if (/^new/.test(table)) {
-      const arr = await News.find({ newType: table }).sort("id asc").limit(size);
-      return res.json(arr)
-    }
-    const arr = await eval(table).find().sort("id asc").limit(size);
+    const arr = await Video.find().sort("id asc").skip(start).limit(size);
     res.json(arr)
+  },
+  getCaptcha: async function (req, res) {
+    let captcha = '';
+    for(let i = 0;i < 6;i++){
+      captcha += parseInt(Math.random()*10)
+    }
+    const arr = await Yzm.find();
+    if(arr.length===0){
+      await Yzm.create({captcha});
+    }else{
+      await Yzm.update({id:1},{captcha});
+    }
+    res.json(captcha)
+
   },
   getListTotal: async function (req, res) {
     const newType = req.query.type;
@@ -125,6 +113,35 @@ module.exports = {
     const obj=await Timer.findOne({id:1});
     const arr=await Timer.update({id:1},{count:obj.count+1}).fetch()
     res.json(arr[0].count)
+  },
+  Login: async function (req, res) {
+    const rs=await Yzm.find();
+    res.json(rs[0].captcha)
+  },
+  LoginInfo: async function (req, res) {
+    const phone = req.body.phone;
+    const rs=await Users.find({phone});
+    let flag = 1;
+    if(rs.length !== 0){
+      await Users.update({phone},{phone})
+      flag = 2
+    }else{
+      await Users.create({phone})
+    }
+    res.json(flag)
+  },
+  getUserInfo: async function (req, res) {
+    const phone = req.body.phone
+    arr = await Users.find({phone});
+    res.json(arr[0]);
+  },
+  SearchNews: async function (req, res) {
+    const size  = req.body.size;
+    const keyword = req.body.keyword;
+    const start = req.body.start;
+    arr = await News.find({title:{contains:keyword}}).skip(start).limit(size);
+    res.json(arr);
+    console.log(arr)
   }
 };
 

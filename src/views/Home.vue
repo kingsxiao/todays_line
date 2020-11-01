@@ -1,49 +1,49 @@
 <template>
   <div class="home">
-    <mt-navbar v-model="selected">
-      <mt-tab-item id="1">推荐</mt-tab-item>
-      <mt-tab-item id="2">综合</mt-tab-item>
-      <mt-tab-item id="3">学术</mt-tab-item>
-      <mt-tab-item id="4">人物</mt-tab-item>
-      <mt-tab-item id="5">最新</mt-tab-item>
-      <mt-tab-item id="6">热门</mt-tab-item>
+    <Header></Header>
+    <mt-navbar fixed v-model="selected" style="top:40px">
+      <mt-tab-item id="Headline">推荐</mt-tab-item>
+      <mt-tab-item id="Comprehensive">综合</mt-tab-item>
+      <mt-tab-item id="Learning">学术</mt-tab-item>
+      <mt-tab-item id="People">人物</mt-tab-item>
+      <mt-tab-item id="Newest">最新</mt-tab-item>
+      <mt-tab-item id="Hot">热门</mt-tab-item>
     </mt-navbar>
 
-    <!-- tab-container -->
-    <mt-tab-container v-model="selected">
-      <mt-tab-container-item id="1">
-        <Headline></Headline>
-      </mt-tab-container-item>
-      <mt-tab-container-item id="2">
-        综合
-      </mt-tab-container-item>
-      <mt-tab-container-item id="3">
-        学术
-      </mt-tab-container-item>
-      <mt-tab-container-item id="4">
-        人物
-      </mt-tab-container-item>
-      <mt-tab-container-item id="5">
-        最新
-      </mt-tab-container-item>
-      <mt-tab-container-item id="6">
-        热门
+    <mt-tab-container v-model="selected" :swipeable='true' style="top:90px">
+      <mt-tab-container-item :is='selected'>
+        <component :is='selected'></component>
       </mt-tab-container-item>
     </mt-tab-container>
   </div>
 </template>
 
 <script>
+import Header from "../components/Header"
 import Headline from "../components/Headline"
+import Comprehensive from "../components/Comprehensive"
+import Learning from "../components/Learning"
+import People from "../components/People"
+import Newest from "../components/Newest"
+import Hot from "../components/Hot"
 export default {
   name: "Home",
   data(){
     return {
-      selected: "1"
+      selected: this.$store.state.home
     }
   },
+  destroyed(){
+    this.$store.commit('changeHome', this.selected)
+  },
   components: {
-    Headline
+    Header,
+    Headline,
+    Comprehensive,
+    Learning,
+    People,
+    Newest,
+    Hot
   }
 };
 </script>

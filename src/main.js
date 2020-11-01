@@ -3,11 +3,15 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import{Button, Tabbar, TabItem, TabContainer, 
-  TabContainerItem, Header, Navbar, Loadmore} from 'mint-ui'
+  TabContainerItem, Header, Navbar, Loadmore,
+   Cell, Spinner, InfiniteScroll, Search, 
+   Switch, Swipe, SwipeItem} from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import Axios from 'axios'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+
+
 
 Vue.config.productionTip = false
 Vue.component(Button.name, Button)
@@ -20,9 +24,16 @@ Vue.component(TabItem.name, TabItem);
 Vue.use(ElementUI);
 Vue.component(Header.name, Header);
 Vue.component(Loadmore.name, Loadmore);
+Vue.component(Cell.name, Cell);
+Vue.component(Spinner.name, Spinner);
+Vue.use(InfiniteScroll);
+Vue.component(Search.name, Search);
+Vue.component(Switch.name, Switch);
+Vue.component(Swipe.name, Swipe);
+Vue.component(SwipeItem.name, SwipeItem);
 
 const instance=Axios.create({
-  baseURL:'http://localhost:1338/users/',
+  baseURL:'http://120.55.37.30:1338/users/',
   // baseURL:'/users/',
   timeout:5000
 })
